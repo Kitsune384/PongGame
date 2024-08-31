@@ -7,6 +7,73 @@
     <title>Pong Game with Targets</title>
     <style>
         body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background-color: #282c34;
+    color: #ffffff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    overflow: hidden;
+}
+
+#intro-screen {
+    text-align: center;
+    animation: fadeIn 2s ease-in-out;
+}
+
+#tree-of-life {
+    font-size: 5rem;
+    animation: bounce 1.5s infinite;
+}
+
+h1 {
+    margin-top: 20px;
+    font-size: 3rem;
+    animation: fadeInUp 2s ease-in-out;
+}
+
+p {
+    font-size: 1.5rem;
+    margin-top: 10px;
+    animation: fadeInUp 2s ease-in-out;
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes bounce {
+    0%, 20%, 50%, 80%, 100% {
+        transform: translateY(0);
+    }
+    40% {
+        transform: translateY(-30px);
+    }
+    60% {
+        transform: translateY(-15px);
+    }
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+        body {
             margin: 0;
             padding: 0;
             overflow: hidden;
@@ -72,7 +139,32 @@
         <button onclick="startGame(1)">Single Player</button>
         <button onclick="startGame(2)">Two Player</button>
     </div>
+    
+    <div id="intro-screen">
+        <div id="tree-of-life">
+            🌴
+        </div>
+        <h1>Welcome to Pong</h1>
+        <p>Press Enter to Start</p>
+    </div>
+    <script src="script.js">document.addEventListener('DOMContentLoaded', () => {
+    document.addEventListener('keydown', (event) => {
+        if (event.key === 'Enter') {
+            // Hide the intro screen
+            document.getElementById('intro-screen').style.display = 'none';
+            
+            // Here you would initialize your Pong game
+            startPongGame();
+        }
+    });
+});
 
+function startPongGame() {
+    // Logic to start the Pong game goes here
+    console.log('Starting Pong Game...');
+}
+</script>
+    
     <!-- Game Canvas -->
     <canvas id="gameCanvas" style="display: none;"></canvas>
 
