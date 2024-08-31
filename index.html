@@ -48,11 +48,14 @@
         }
         .intro button {
             position: absolute;
-            top: 70%;
+            top: 75%;
             left: 50%;
             transform: translate(-50%, -50%);
             font-size: 24px;
             padding: 10px 20px;
+            background-color: #32CD32; /* Lime green */
+            color: #fff;
+            border-radius: 10px;
         }
     </style>
 </head>
@@ -86,9 +89,10 @@
         let treeHeight = 0;
         let leafSwing = 0;
         let sunX = 100;
-        let cloudX = 0;
+        let cloudX1 = 0;
+        let cloudX2 = -300;
         const treeMaxHeight = 300;
-        const sunRadius = 50;
+        const sunRadius = 60;
         const cloudSpeed = 1;
 
         // Game Variables
@@ -305,35 +309,53 @@
                 introCtx.arc(sunX, 100, sunRadius, 0, Math.PI * 2);
                 introCtx.fillStyle = '#FFD700'; // Sun yellow
                 introCtx.fill();
+                introCtx.strokeStyle = '#FFA500'; // Sun border
+                introCtx.lineWidth = 5;
+                introCtx.stroke();
                 introCtx.closePath();
 
                 // Draw clouds
-                introCtx.beginPath();
-                introCtx.arc(cloudX, 80, 30, 0, Math.PI * 2);
-                introCtx.arc(cloudX + 60, 80, 30, 0, Math.PI * 2);
                 introCtx.fillStyle = '#FFFFFF'; // Cloud white
+                introCtx.beginPath();
+                introCtx.arc(cloudX1, 80, 30, 0, Math.PI * 2);
+                introCtx.arc(cloudX1 + 60, 80, 30, 0, Math.PI * 2);
+                introCtx.arc(cloudX1 + 120, 80, 30, 0, Math.PI * 2);
                 introCtx.fill();
-                introCtx.closePath();
-                cloudX += cloudSpeed;
-                if (cloudX > introCanvas.width) {
-                    cloudX = -60;
+                introCtx.beginPath();
+                introCtx.arc(cloudX2, 120, 40, 0, Math.PI * 2);
+                introCtx.arc(cloudX2 + 60, 120, 40, 0, Math.PI * 2);
+                introCtx.arc(cloudX2 + 120, 120, 40, 0, Math.PI * 2);
+                introCtx.fill();
+                cloudX1 += cloudSpeed;
+                cloudX2 += cloudSpeed;
+                if (cloudX1 > introCanvas.width) {
+                    cloudX1 = -120;
+                }
+                if (cloudX2 > introCanvas.width) {
+                    cloudX2 = -120;
                 }
 
                 // Draw growing palm tree
-                const trunkHeight = Math.min(treeHeight, 100);
+                const trunkHeight = Math.min(treeHeight, 200);
                 introCtx.fillStyle = '#8B4513'; // Trunk color
-                introCtx.fillRect(introCanvas.width / 2 - 15, introCanvas.height / 2 + (100 - trunkHeight), 30, trunkHeight);
+                introCtx.fillRect(introCanvas.width / 2 - 20, introCanvas.height / 2 + (200 - trunkHeight), 40, trunkHeight);
 
                 // Draw palm leaves
                 introCtx.save();
-                introCtx.translate(introCanvas.width / 2, introCanvas.height / 2 - (100 - trunkHeight));
+                introCtx.translate(introCanvas.width / 2, introCanvas.height / 2 - (200 - trunkHeight));
                 introCtx.rotate(leafSwing);
                 introCtx.beginPath();
-                introCtx.moveTo(-60, -20);
+                introCtx.moveTo(-70, -30);
                 introCtx.lineTo(0, -100);
-                introCtx.lineTo(60, -20);
+                introCtx.lineTo(70, -30);
                 introCtx.closePath();
                 introCtx.fillStyle = '#228B22'; // Leaf color
+                introCtx.fill();
+                introCtx.beginPath();
+                introCtx.moveTo(-60, -20);
+                introCtx.lineTo(0, -90);
+                introCtx.lineTo(60, -20);
+                introCtx.closePath();
                 introCtx.fill();
                 introCtx.restore();
 
