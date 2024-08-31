@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pong Game with Targets</title>
+    <style>
+        canvas {
+            background-color: #000;
+            display: block;
+            margin: auto;
+            border: 1px solid #fff;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="gameCanvas" width="800" height="600"></canvas>
+    <script>const canvas = document.getElementById('gameCanvas');
+const ctx = canvas.getContext('2d');
+
+// Game variables
+const paddleWidth = 100;
+const paddleHeight = 20;
+let paddleX = (canvas.width - paddleWidth) / 2;
+
+const ballRadius = 10;
+let x = canvas.width / 2;
+let y = canvas.height - 30;
+let dx = 2;
+let dy = -2;
+
+const targetRowCount = 3;
+const targetColumnCount = 5;
+const targetWidth = 75;
+const targetHeight = 20;
+const targetPadding = 10;
+const targetOffsetTop = 30;
+const targetOffsetLeft = 30;
+
+let rightPressed = false;
+let leftPressed = false;
+
+let score = 0;
+let targets = [];
+
+// Initialize targets
+for(let c = 0; c < targetColumnCount; c++) {
+    targets[c] = [];
+    for(let r = 0; r < targetRowCount; r++) {
+        targets[c][r] = { x: 0, y: 0, status: 1 }; // Status 1 means target is not hit
+    }
+}
+
+// Event listeners for paddle movement
+document.addEventListener('keydown', keyDownHandler, false);
+document.addEventListener('keyup', keyUpHandler, false);
+
+function keyDownHandler(e) {
+    if(e.key === 'Right' || e.key === 'ArrowRight') {
+        rightPressed = true;
+    } else if(e.key === 'Left' || e.key === 'ArrowLeft') {
+        leftPressed = true;
+    }
+}
+
+function keyUpHandler(e) {
+    if(e.key === 'Right' || e.key === 'ArrowRight') {
+        rightPressed = false;
+    } else if(e.key === 'Left' || e.key === 'ArrowLeft') {
+        leftPressed = false;
+    }
+}
+
+// Draw ball
+function drawBall() {
+    ctx.beginPath();
+    ctx.arc(x, y, ballRadius, 0, Math.PI*2);
+    ctx.fillStyle = '#fff';
+    ctx.fill();
+    ctx.closePath();
+}
+
+// Draw paddle
+function drawPaddle() {
+    ctx.beginPath();
+    ctx.rect(paddleX, canvas.height - paddleHeight, paddleWidth, paddleHeight);
+    ctx.fillStyle = '#fff';
+    ctx.fill();
+    ctx.closePath();
+}
+
+// Draw targets
+function drawTargets() {
+    for(let c = 0; c < targetColumnCount; c++) {
+        for(let r = 0; r < targetRowCount; r++) {
+            if(targets[c][r].status === 1) {
+                const targetX = c * (targetWidth + targetPadding) + targetOffsetLeft;
+                const targetY = r * (targetHeight + targetPadding) + targetOffsetTop;
+                targets[c][r].x = targetX;
+                targets[c][r].y = targetY;
+                ctx.beginPath();
+                ctx.rect(targetX, targetY, targetWidth, targetHeight);
+                ctx.fillStyle = '#0095DD';
+                ctx.fill();
+                ctx.closePath();
+            }
+        }
+    }
+}
+
+// Collision detection
+function collisionDetection() {
+    for(let c = 0; c < targetColumnCount; c++) {
+        for(let r = 0; r < targetRowCount; r++) {
+            const target = targets[c][r];
+            if(target.status === 1) {
+                if(x > target.x && x < target.x + targetWidth && y > target.y && y < target.y + targetHeight) {
+                    dy = -dy;
+                    target.status = 0;
+                    score++;
+                    if(score === targetRowCount * targetColumnCount) {
+                        alert("YOU WIN, CONGRATULATIONS!");
+                        document.location.reload();
+                    }
+                }
+            }
+        }
+    }
+}
+
+// Draw score
+function drawScore() {
+    ctx.font = "16px Arial";
+    ctx.fillStyle = "#0095DD";
+    ctx.fillText("Score: " + score, 8, 20);
+}
+
+// Draw everything
+function draw() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    drawTargets();
+    drawBall();
+    drawPaddle();
+    drawScore();
+    collisionDetection();
+
+    // Ball movement
+    x += dx;
+    y += dy;
+
+    // Ball collision with walls
+    if(x + dx > canvas.width - ballRadius || x + dx < ballRadius) {
+        dx = -dx;
+    }
+    if(y + dy < ballRadius) {
+        dy = -dy;
+    } else if(y + dy > canvas.height - ballRadius) {
+        if(x > paddleX && x < paddleX + paddleWidth) {
+            dy = -dy;
+        } else {
+            alert("GAME OVER");
+            document.location.reload();
+        }
+    }
+
+    // Paddle movement
+    if(rightPressed && paddleX < canvas.width - paddleWidth) {
+        paddleX += 7;
+    } else if(leftPressed && paddleX > 0) {
+        paddleX -= 7;
+    }
+
+    requestAnimationFrame(draw);
+}
+
+draw();
+</script>
+</body>
+</html>
